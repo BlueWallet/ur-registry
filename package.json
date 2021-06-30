@@ -67,7 +67,7 @@
   "author": "Soralit <soralitria@gmail.com>",
   "license": "Apache-2.0",
   "dependencies": {
-    "@ngraveio/bc-ur": "^1.1.5",
+    "@ngraveio/bc-ur": "https://github.com/BlueWallet/bc-ur",
     "tslib": "~2.2.0"
   },
   "volta": {
