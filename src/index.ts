@@ -19,6 +19,22 @@ import { MultiKey } from './MultiKey';
 import { ScriptExpressions } from './ScriptExpression';
 import { PathComponent } from './PathComponent';
 
+import { RegistryItem } from './RegistryItem';
+import { RegistryTypes, RegistryType } from './RegistryType';
+
+import {
+  addReader,
+  addSemanticDecode,
+  addSemanticEncode,
+  addWriter,
+  decodeToDataItem,
+  encodeDataItem,
+} from './lib';
+
+export { DataItem } from './lib';
+
+import { patchTags } from './utils';
+
 const URlib = {
   URRegistryDecoder,
   Bytes,
@@ -36,6 +52,25 @@ const URlib = {
   PathComponent,
 };
 
+const cbor = {
+  addReader,
+  addSemanticDecode,
+  addSemanticEncode,
+  addWriter,
+  patchTags,
+};
+
+const extend = {
+  RegistryTypes,
+  RegistryItem,
+  RegistryType,
+
+  decodeToDataItem,
+  encodeDataItem,
+
+  cbor,
+};
+
 export {
   URRegistryDecoder,
   Bytes,
@@ -51,6 +86,7 @@ export {
   MultiKey,
   ScriptExpressions,
   PathComponent,
+  extend,
 };
 
 export default URlib;

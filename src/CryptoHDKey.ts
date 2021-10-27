@@ -1,7 +1,7 @@
+import { encode } from 'bs58check';
 import { CryptoCoinInfo } from './CryptoCoinInfo';
 import { CryptoKeypath } from './CryptoKeypath';
-import { decodeToDataItem } from './lib/cbor-sync';
-import { DataItem } from './lib/DataItem';
+import { decodeToDataItem, DataItem } from './lib';
 import { RegistryItem } from './RegistryItem';
 import { RegistryTypes } from './RegistryType';
 
@@ -58,6 +58,38 @@ export class CryptoHDKey extends RegistryItem {
   public getParentFingerprint = () => this.parentFingerprint;
   public getName = () => this.name;
   public getNote = () => this.note;
+  public getBip32Key = () => {
+    let version: Buffer;
+    let depth: number;
+    let index: number;
+    let parentFingerprint: Buffer = Buffer.alloc(4).fill(0);
+    if(this.isMaster()) {
+      // version bytes defined on https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#serialization-format
+      version = Buffer.from("0488ADE4", "hex")
+      depth = 0;
+      index = 0;
+    } else {
+      depth = this.getOrigin().getComponents().length || this.getOrigin().getDepth();
+      const paths = this.getOrigin().getComponents();
+      const lastPath = paths[paths.length - 1];
+      if(lastPath) {
+        index = lastPath.isHardened() ? lastPath.getIndex()! + 0x80000000 : lastPath.getIndex()!;
+        parentFingerprint = this.getParentFingerprint();
+      }
+      if(this.isPrivateKey()) {
+        version = Buffer.from('0488ADE4', 'hex');
+      } else {
+        version = Buffer.from('0488B21E', 'hex');
+      }
+    }
+    const depthBuffer = Buffer.alloc(1);
+    depthBuffer.writeUInt8(depth, 0);
+    const indexBuffer = Buffer.alloc(4);
+    indexBuffer.writeUInt32BE(index, 0);
+    const chainCode = this.getChainCode();
+    const key = this.getKey();
+    return encode(Buffer.concat([version, depthBuffer, parentFingerprint, indexBuffer, chainCode, key]));
+  }
 
   public getRegistryType = () => {
     return RegistryTypes.CRYPTO_HDKEY;
@@ -121,7 +153,7 @@ export class CryptoHDKey extends RegistryItem {
         map[Keys.children] = children;
       }
       if (this.parentFingerprint) {
-        map[Keys.parent_fingerprint] = this.parentFingerprint.readUInt32BE();
+        map[Keys.parent_fingerprint] = this.parentFingerprint.readUInt32BE(0);
       }
       if (this.name !== undefined) {
         map[Keys.name] = this.name;
@@ -152,7 +184,7 @@ export class CryptoHDKey extends RegistryItem {
     let parentFingerprint: Buffer;
     if (_parentFingerprint) {
       parentFingerprint = Buffer.alloc(4);
-      parentFingerprint.writeUInt32BE(_parentFingerprint);
+      parentFingerprint.writeUInt32BE(_parentFingerprint, 0);
     }
     const name = map[Keys.name];
     const note = map[Keys.note];

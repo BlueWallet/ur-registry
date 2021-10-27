@@ -8,6 +8,7 @@ export class RegistryType {
 }
 
 export const RegistryTypes = {
+  UUID: new RegistryType('uuid', 37),
   BYTES: new RegistryType('bytes', undefined),
   CRYPTO_HDKEY: new RegistryType('crypto-hdkey', 303),
   CRYPTO_KEYPATH: new RegistryType('crypto-keypath', 304),
