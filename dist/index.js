@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PathComponent = exports.ScriptExpressions = exports.MultiKey = exports.CryptoPSBT = exports.CryptoOutput = exports.CryptoECKey = exports.CryptoCoinInfoNetwork = exports.CryptoCoinInfoType = exports.CryptoCoinInfo = exports.CryptoKeypath = exports.CryptoHDKey = exports.CryptoAccount = exports.Bytes = exports.URRegistryDecoder = void 0;
+exports.extend = exports.PathComponent = exports.ScriptExpressions = exports.MultiKey = exports.CryptoPSBT = exports.CryptoOutput = exports.CryptoECKey = exports.CryptoCoinInfoNetwork = exports.CryptoCoinInfoType = exports.CryptoCoinInfo = exports.CryptoKeypath = exports.CryptoHDKey = exports.CryptoAccount = exports.Bytes = exports.URRegistryDecoder = exports.DataItem = void 0;
 require("./patchCBOR");
 const CryptoHDKey_1 = require("./CryptoHDKey");
 Object.defineProperty(exports, "CryptoHDKey", { enumerable: true, get: function () { return CryptoHDKey_1.CryptoHDKey; } });
@@ -28,6 +28,12 @@ const ScriptExpression_1 = require("./ScriptExpression");
 Object.defineProperty(exports, "ScriptExpressions", { enumerable: true, get: function () { return ScriptExpression_1.ScriptExpressions; } });
 const PathComponent_1 = require("./PathComponent");
 Object.defineProperty(exports, "PathComponent", { enumerable: true, get: function () { return PathComponent_1.PathComponent; } });
+const RegistryItem_1 = require("./RegistryItem");
+const RegistryType_1 = require("./RegistryType");
+const lib_1 = require("./lib");
+var lib_2 = require("./lib");
+Object.defineProperty(exports, "DataItem", { enumerable: true, get: function () { return lib_2.DataItem; } });
+const utils_1 = require("./utils");
 const URlib = {
     URRegistryDecoder: Decoder_1.URRegistryDecoder,
     Bytes: Bytes_1.Bytes,
@@ -44,5 +50,21 @@ const URlib = {
     ScriptExpressions: ScriptExpression_1.ScriptExpressions,
     PathComponent: PathComponent_1.PathComponent,
 };
+const cbor = {
+    addReader: lib_1.addReader,
+    addSemanticDecode: lib_1.addSemanticDecode,
+    addSemanticEncode: lib_1.addSemanticEncode,
+    addWriter: lib_1.addWriter,
+    patchTags: utils_1.patchTags,
+};
+const extend = {
+    RegistryTypes: RegistryType_1.RegistryTypes,
+    RegistryItem: RegistryItem_1.RegistryItem,
+    RegistryType: RegistryType_1.RegistryType,
+    decodeToDataItem: lib_1.decodeToDataItem,
+    encodeDataItem: lib_1.encodeDataItem,
+    cbor,
+};
+exports.extend = extend;
 exports.default = URlib;
 //# sourceMappingURL=index.js.map

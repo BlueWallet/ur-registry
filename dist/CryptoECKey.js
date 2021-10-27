@@ -1,8 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CryptoECKey = void 0;
-const cbor_sync_1 = require("./lib/cbor-sync");
-const DataItem_1 = require("./lib/DataItem");
+const lib_1 = require("./lib");
 const RegistryItem_1 = require("./RegistryItem");
 const RegistryType_1 = require("./RegistryType");
 var Keys;
@@ -29,7 +28,7 @@ class CryptoECKey extends RegistryItem_1.RegistryItem {
                 map[Keys.private] = this.privateKey;
             }
             map[Keys.data] = this.data;
-            return new DataItem_1.DataItem(map);
+            return new lib_1.DataItem(map);
         };
         this.data = args.data;
         this.curve = args.curve;
@@ -48,7 +47,7 @@ CryptoECKey.fromDataItem = (dataItem) => {
     return new CryptoECKey({ data, curve, privateKey });
 };
 CryptoECKey.fromCBOR = (_cborPayload) => {
-    const dataItem = cbor_sync_1.decodeToDataItem(_cborPayload);
+    const dataItem = (0, lib_1.decodeToDataItem)(_cborPayload);
     return CryptoECKey.fromDataItem(dataItem);
 };
 //# sourceMappingURL=CryptoECKey.js.map

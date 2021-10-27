@@ -1,8 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CryptoCoinInfo = exports.Network = exports.Type = void 0;
-const cbor_sync_1 = require("./lib/cbor-sync");
-const DataItem_1 = require("./lib/DataItem");
+const lib_1 = require("./lib");
 const RegistryItem_1 = require("./RegistryItem");
 const RegistryType_1 = require("./RegistryType");
 var Keys;
@@ -41,7 +40,7 @@ class CryptoCoinInfo extends RegistryItem_1.RegistryItem {
             if (this.network) {
                 map[Keys.network] = this.network;
             }
-            return new DataItem_1.DataItem(map);
+            return new lib_1.DataItem(map);
         };
     }
 }
@@ -53,7 +52,7 @@ CryptoCoinInfo.fromDataItem = (dataItem) => {
     return new CryptoCoinInfo(type, network);
 };
 CryptoCoinInfo.fromCBOR = (_cborPayload) => {
-    const dataItem = cbor_sync_1.decodeToDataItem(_cborPayload);
+    const dataItem = (0, lib_1.decodeToDataItem)(_cborPayload);
     return CryptoCoinInfo.fromDataItem(dataItem);
 };
 //# sourceMappingURL=CryptoCoinInfo.js.map

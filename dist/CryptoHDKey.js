@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CryptoHDKey = void 0;
+const bs58check_1 = require("bs58check");
 const CryptoCoinInfo_1 = require("./CryptoCoinInfo");
 const CryptoKeypath_1 = require("./CryptoKeypath");
-const cbor_sync_1 = require("./lib/cbor-sync");
-const DataItem_1 = require("./lib/DataItem");
+const lib_1 = require("./lib");
 const RegistryItem_1 = require("./RegistryItem");
 const RegistryType_1 = require("./RegistryType");
 var Keys;
@@ -33,6 +33,39 @@ class CryptoHDKey extends RegistryItem_1.RegistryItem {
         this.getParentFingerprint = () => this.parentFingerprint;
         this.getName = () => this.name;
         this.getNote = () => this.note;
+        this.getBip32Key = () => {
+            let version;
+            let depth;
+            let index;
+            let parentFingerprint = Buffer.alloc(4).fill(0);
+            if (this.isMaster()) {
+                version = Buffer.from("0488ADE4", "hex");
+                depth = 0;
+                index = 0;
+            }
+            else {
+                depth = this.getOrigin().getComponents().length || this.getOrigin().getDepth();
+                const paths = this.getOrigin().getComponents();
+                const lastPath = paths[paths.length - 1];
+                if (lastPath) {
+                    index = lastPath.isHardened() ? lastPath.getIndex() + 0x80000000 : lastPath.getIndex();
+                    parentFingerprint = this.getParentFingerprint();
+                }
+                if (this.isPrivateKey()) {
+                    version = Buffer.from('0488ADE4', 'hex');
+                }
+                else {
+                    version = Buffer.from('0488B21E', 'hex');
+                }
+            }
+            const depthBuffer = Buffer.alloc(1);
+            depthBuffer.writeUInt8(depth, 0);
+            const indexBuffer = Buffer.alloc(4);
+            indexBuffer.writeUInt32BE(index, 0);
+            const chainCode = this.getChainCode();
+            const key = this.getKey();
+            return (0, bs58check_1.encode)(Buffer.concat([version, depthBuffer, parentFingerprint, indexBuffer, chainCode, key]));
+        };
         this.getRegistryType = () => {
             return RegistryType_1.RegistryTypes.CRYPTO_HDKEY;
         };
@@ -84,7 +117,7 @@ class CryptoHDKey extends RegistryItem_1.RegistryItem {
                     map[Keys.children] = children;
                 }
                 if (this.parentFingerprint) {
-                    map[Keys.parent_fingerprint] = this.parentFingerprint.readUInt32BE();
+                    map[Keys.parent_fingerprint] = this.parentFingerprint.readUInt32BE(0);
                 }
                 if (this.name !== undefined) {
                     map[Keys.name] = this.name;
@@ -93,7 +126,7 @@ class CryptoHDKey extends RegistryItem_1.RegistryItem {
                     map[Keys.note] = this.note;
                 }
             }
-            return new DataItem_1.DataItem(map);
+            return new lib_1.DataItem(map);
         };
         if (args.isMaster) {
             this.setupMasterKey(args);
@@ -123,7 +156,7 @@ CryptoHDKey.fromDataItem = (dataItem) => {
     let parentFingerprint;
     if (_parentFingerprint) {
         parentFingerprint = Buffer.alloc(4);
-        parentFingerprint.writeUInt32BE(_parentFingerprint);
+        parentFingerprint.writeUInt32BE(_parentFingerprint, 0);
     }
     const name = map[Keys.name];
     const note = map[Keys.note];
@@ -141,7 +174,7 @@ CryptoHDKey.fromDataItem = (dataItem) => {
     });
 };
 CryptoHDKey.fromCBOR = (_cborPayload) => {
-    const dataItem = cbor_sync_1.decodeToDataItem(_cborPayload);
+    const dataItem = (0, lib_1.decodeToDataItem)(_cborPayload);
     return CryptoHDKey.fromDataItem(dataItem);
 };
 //# sourceMappingURL=CryptoHDKey.js.map

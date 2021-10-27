@@ -2,8 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CryptoAccount = void 0;
 const _1 = require(".");
-const cbor_sync_1 = require("./lib/cbor-sync");
-const DataItem_1 = require("./lib/DataItem");
+const lib_1 = require("./lib");
 const RegistryItem_1 = require("./RegistryItem");
 const RegistryType_1 = require("./RegistryType");
 var Keys;
@@ -24,12 +23,12 @@ class CryptoAccount extends RegistryItem_1.RegistryItem {
         this.toDataItem = () => {
             const map = {};
             if (this.masterFingerprint) {
-                map[Keys.masterFingerprint] = this.masterFingerprint.readUInt32BE();
+                map[Keys.masterFingerprint] = this.masterFingerprint.readUInt32BE(0);
             }
             if (this.outputDescriptors) {
                 map[Keys.outputDescriptors] = this.outputDescriptors.map((item) => item.toDataItem());
             }
-            return new DataItem_1.DataItem(map);
+            return new lib_1.DataItem(map);
         };
     }
 }
@@ -39,14 +38,14 @@ CryptoAccount.fromDataItem = (dataItem) => {
     const masterFingerprint = Buffer.alloc(4);
     const _masterFingerprint = map[Keys.masterFingerprint];
     if (_masterFingerprint) {
-        masterFingerprint.writeUInt32BE(_masterFingerprint);
+        masterFingerprint.writeUInt32BE(_masterFingerprint, 0);
     }
     const outputDescriptors = map[Keys.outputDescriptors];
     const cryptoOutputs = outputDescriptors.map((item) => _1.CryptoOutput.fromDataItem(item));
     return new CryptoAccount(masterFingerprint, cryptoOutputs);
 };
 CryptoAccount.fromCBOR = (_cborPayload) => {
-    const dataItem = cbor_sync_1.decodeToDataItem(_cborPayload);
+    const dataItem = (0, lib_1.decodeToDataItem)(_cborPayload);
     return CryptoAccount.fromDataItem(dataItem);
 };
 //# sourceMappingURL=CryptoAccount.js.map

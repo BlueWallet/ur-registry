@@ -1,8 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Bytes = void 0;
-const cbor_sync_1 = require("./lib/cbor-sync");
-const DataItem_1 = require("./lib/DataItem");
+const lib_1 = require("./lib");
 const RegistryItem_1 = require("./RegistryItem");
 const RegistryType_1 = require("./RegistryType");
 class Bytes extends RegistryItem_1.RegistryItem {
@@ -14,7 +13,7 @@ class Bytes extends RegistryItem_1.RegistryItem {
         };
         this.getData = () => this.bytes;
         this.toDataItem = () => {
-            return new DataItem_1.DataItem(this.bytes);
+            return new lib_1.DataItem(this.bytes);
         };
     }
 }
@@ -27,7 +26,7 @@ Bytes.fromDataItem = (dataItem) => {
     return new Bytes(bytes);
 };
 Bytes.fromCBOR = (_cborPayload) => {
-    const dataItem = cbor_sync_1.decodeToDataItem(_cborPayload);
+    const dataItem = (0, lib_1.decodeToDataItem)(_cborPayload);
     return Bytes.fromDataItem(dataItem);
 };
 //# sourceMappingURL=Bytes.js.map

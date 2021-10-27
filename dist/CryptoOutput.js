@@ -3,8 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CryptoOutput = void 0;
 const CryptoECKey_1 = require("./CryptoECKey");
 const CryptoHDKey_1 = require("./CryptoHDKey");
-const cbor_sync_1 = require("./lib/cbor-sync");
-const DataItem_1 = require("./lib/DataItem");
+const lib_1 = require("./lib");
 const MultiKey_1 = require("./MultiKey");
 const RegistryItem_1 = require("./RegistryItem");
 const RegistryType_1 = require("./RegistryType");
@@ -56,7 +55,7 @@ class CryptoOutput extends RegistryItem_1.RegistryItem {
                     dataItem.setTag(tagValue);
                 }
                 else {
-                    dataItem = new DataItem_1.DataItem(dataItem, tagValue);
+                    dataItem = new lib_1.DataItem(dataItem, tagValue);
                 }
             });
             return dataItem;
@@ -72,7 +71,7 @@ CryptoOutput.fromDataItem = (dataItem) => {
         const se = ScriptExpression_1.ScriptExpression.fromTag(_tag);
         if (se) {
             scriptExpressions.push(se);
-            if (_dataItem.getData() instanceof DataItem_1.DataItem) {
+            if (_dataItem.getData() instanceof lib_1.DataItem) {
                 _dataItem = _dataItem.getData();
                 _tag = _dataItem.getTag();
             }
@@ -104,7 +103,7 @@ CryptoOutput.fromDataItem = (dataItem) => {
     }
 };
 CryptoOutput.fromCBOR = (_cborPayload) => {
-    const dataItem = cbor_sync_1.decodeToDataItem(_cborPayload);
+    const dataItem = (0, lib_1.decodeToDataItem)(_cborPayload);
     return CryptoOutput.fromDataItem(dataItem);
 };
 //# sourceMappingURL=CryptoOutput.js.map

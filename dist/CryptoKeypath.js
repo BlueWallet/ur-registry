@@ -1,8 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CryptoKeypath = void 0;
-const cbor_sync_1 = require("./lib/cbor-sync");
-const DataItem_1 = require("./lib/DataItem");
+const lib_1 = require("./lib");
 const PathComponent_1 = require("./PathComponent");
 const RegistryItem_1 = require("./RegistryItem");
 const RegistryType_1 = require("./RegistryType");
@@ -48,12 +47,12 @@ class CryptoKeypath extends RegistryItem_1.RegistryItem {
                 });
             map[Keys.components] = components;
             if (this.sourceFingerprint) {
-                map[Keys.source_fingerprint] = this.sourceFingerprint.readUInt32BE();
+                map[Keys.source_fingerprint] = this.sourceFingerprint.readUInt32BE(0);
             }
             if (this.depth !== undefined) {
                 map[Keys.depth] = this.depth;
             }
-            return new DataItem_1.DataItem(map);
+            return new lib_1.DataItem(map);
         };
     }
 }
@@ -78,13 +77,13 @@ CryptoKeypath.fromDataItem = (dataItem) => {
     let sourceFingerprint;
     if (_sourceFingerprint) {
         sourceFingerprint = Buffer.alloc(4);
-        sourceFingerprint.writeUInt32BE(_sourceFingerprint);
+        sourceFingerprint.writeUInt32BE(_sourceFingerprint, 0);
     }
     const depth = map[Keys.depth];
     return new CryptoKeypath(pathComponents, sourceFingerprint, depth);
 };
 CryptoKeypath.fromCBOR = (_cborPayload) => {
-    const dataItem = cbor_sync_1.decodeToDataItem(_cborPayload);
+    const dataItem = (0, lib_1.decodeToDataItem)(_cborPayload);
     return CryptoKeypath.fromDataItem(dataItem);
 };
 //# sourceMappingURL=CryptoKeypath.js.map

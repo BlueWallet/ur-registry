@@ -2,14 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RegistryItem = void 0;
 const bc_ur_1 = require("@ngraveio/bc-ur");
-const cbor_sync_1 = require("./lib/cbor-sync");
+const lib_1 = require("./lib");
 class RegistryItem {
     constructor() {
         this.toCBOR = () => {
             if (this.toDataItem() === undefined) {
                 throw new Error(`#[ur-registry][RegistryItem][fn.toCBOR]: registry ${this.getRegistryType()}'s method toDataItem returns undefined`);
             }
-            return cbor_sync_1.encodeDataItem(this.toDataItem());
+            return (0, lib_1.encodeDataItem)(this.toDataItem());
         };
         this.toUR = () => {
             return new bc_ur_1.UR(this.toCBOR(), this.getRegistryType().getType());
